@@ -1,0 +1,28 @@
+stages:
+  - stage1example
+  - stage2example
+
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"' 
+    - when: always 
+
+stage1:
+  stage: stage1example
+  image:
+    name: velero-utils:1.0.1
+    entrypoint: ["/bin/bash", "-c"]
+  script:
+    - echo "Hello World"
+
+stage2:
+  stage: stage2example
+  image:
+    name: velero-utils:1.0.1
+    entrypoint: ["/bin/bash", "-c"]
+  script:
+    - mkdir -p ~/.kube; echo -n $KUBE_CONFIG | base64 -d > ~/.kube/config; export KUBECONFIG=$HOME/.kube/config
+    - kubectl get po 
+    - kubectl get po -A 
+
